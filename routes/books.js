@@ -10,8 +10,27 @@ router.post("/", function(req,res, next) {
     console.log("hello");
     var name = req.body.name;
     var kirjoittaja = req.body.author;
-    console.log(name);
-    console.log(kirjoittaja);
+    if (name == "") {
+        request.get({
+        url: "https://api.nytimes.com/svc/books/v3/reviews.json",
+        qs: {
+            'api-key': "bf68c93b35e446589a47004179fd0f97",
+            'author': kirjoittaja
+        },
+    }, function(err, response, body) {
+        body = JSON.parse(body);
+        url =body["results"][0]["url"];
+        var array = body["results"][0]["book_title"];
+        for (var i=0; i < body.length; i++) {
+            array.push(body["results"][i]["book_title"])
+        }
+        var summary = body["results"][0]["book_title"];
+        res.render("listbooks", {kirjoittaja: kirjoittaja, array:array})
+    })
+
+    } else {
+    name = name.trim();
+    kirjoittaja = kirjoittaja.trim();
     request.get({
         url: "https://api.nytimes.com/svc/books/v3/reviews.json",
         qs: {
@@ -25,6 +44,7 @@ router.post("/", function(req,res, next) {
         var summary = body["results"][0]["summary"];
         res.render("books", {name: name, kirjoittaja: kirjoittaja, url:url, summary: summary})
     })
+}
 });
 
 module.exports = router;
