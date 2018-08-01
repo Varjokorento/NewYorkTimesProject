@@ -18,16 +18,27 @@ router.post("/", function(req,res, next) {
             'author': kirjoittaja
         },
     }, function(err, response, body) {
+      
+        console.log(err);
         body = JSON.parse(body);
+        console.log(body);
+        if(body["status"] == "ERROR") {
+            res.redirect("/");
+        } else {
         url =body["results"][0]["url"];
+        if(body["status"] == "ERROR") {
+            res.redirect("/");
+        } else {
         var array = body["results"][0]["book_title"];
+
         for (var i=0; i < body.length; i++) {
             array.push(body["results"][i]["book_title"])
         }
         var summary = body["results"][0]["book_title"];
         res.render("listbooks", {kirjoittaja: kirjoittaja, array:array})
-    })
-
+    }
+    
+    }});
     } else {
     name = name.trim();
     kirjoittaja = kirjoittaja.trim();
@@ -39,12 +50,21 @@ router.post("/", function(req,res, next) {
             'author': kirjoittaja
         },
     }, function(err, response, body) {
+        if(err !== null) {
+            res.redirect("/");
+        }
         body = JSON.parse(body);
-        url =body["results"][0]["url"];
+        console.log(body);
+        if(body["status"] == "ERROR") {
+            res.redirect("/");
+        } else {
+        url = body["results"][0]["url"];
         var summary = body["results"][0]["summary"];
         res.render("books", {name: name, kirjoittaja: kirjoittaja, url:url, summary: summary})
-    })
+    }
+})
 }
 });
+
 
 module.exports = router;
