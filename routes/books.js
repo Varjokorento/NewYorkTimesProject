@@ -16,6 +16,7 @@ router.post("/", function(req,res, next) {
         url: "https://api.nytimes.com/svc/books/v3/reviews.json",
         qs: {
             'api-key': "bf68c93b35e446589a47004179fd0f97",
+            'title': name,
             'author': kirjoittaja
         },
     }, function(err, response, body) {
